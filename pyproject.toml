@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "synomail-ui"
+version = "0.1.0"
+description = ""
+authors = ["Antonio Alonso <alloant@gmail.com>"]
+readme = "README.md"
+packages = [{include = "synomail_ui"}]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+libsynomail = {git = "https://github.com/alloant/libsynomail.git"}
+pyside6 = "^6.5.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

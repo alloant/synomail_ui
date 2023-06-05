@@ -1,0 +1,9 @@
+user:vInd1
+despacho:/team-folders/File Sharing/Antonio/Tests/Despacho
+archive:/team-folders/File Sharing/Antonio/Tests/Archive
+local_folder:/home/antonio/Downloads/Aes
+teams:{'folder':'/team-folders/Mailbox @/@ to cr','type':'ctr'}|{'folder':'/team-folders/Mail asr/Mail from asr','type':'asr'}|{'folder':'/team-folders/Mail cg/Mail from cg','type':'cg'}|{'folder':'/team-folders/Mail r/Mail from r','type':'r'}
+deps:vc,vcsr,df-scr,adr,dg1,dg2,der,vInd1,vInd2,vAsmo,vJ1,vJ2,of scr,of adr Asmo,of j1,of j2,of j3,eugeni
+tokens:{'vcr':'UYkq20T9kLRtjCQNkZg7qxcYmi9KysM6ZrbiftN9pxmUKOCucOeJciIdHlfQQsyn','vcsr':'I7OuDSo2csbTAdn6KsqHMm4pJVDG6e7dJ62pOs1Y1A0SkYsf3eulYdeNXGIgo1br','df-scr':'Hm3Oaif9nQr22rPz8zZVWrqbegeq0LO27vRdfL97Gy5aKs5RF4PKZadalkcE07LP','adr':'2SVVvLdv432h1dcP70OutZ7wFFnXnTQiWQsIFZ5HfGaOK3RdRrk240FvSPe0vXum','dg1':'j5KpMyqamfnKKoT807t7egtNXSCVlXwoC6IyMK6Qrfyp8yhwL4Lyxr3g9kuynYgA','dg2':'pU7OYEZCJt8RyEffKEuIY236cS2Y3IbjXPNT3DkWynpWsDVpW8AAbNNe3VpoRjBz','der':'YRj1kbXuBMNkvPvhVEvZP0pPRXTkEDqbe6sPLmqyEhDJtAx5HTgarwJfoO8BiH1j','vind1':'nSJhM9VtOGVD7mbbfjD7apkd29FdqxtabW6drbOGIsNMx742xc5PZkV5M2KNJPUR','vind2':'qZj6NtsD5QgobpT5S7xIKyRLhzOVg2mrtRFAfQT4hY2v5IY2amUNgrZDYtFVLMEr','vasmo':'ulMOxZDjeMJWjyI3gsHkBBmbSZJRm5r6NbbtQ89vj8K0raQo183vuv5nZUOUumMe','vj1':'1DzeK9rT61kLiDRoxZmTsf78U0MWqzTVrlgf0XT53k1wu9MipS5ByI5xazPSuJtk','vj2':'cHm2DUBoWFR1yhjrLNLRZe5PB5soEjlT8V77KYsZO1b6Afqh66be8yYzlJUp9abO','of scr':'Dja0n3mR8kWaMpjVaz1xcGWOR4SxRxFQDudPifSBTt7RKPObuLiOAjr5TIDBT58u','eugeni':'PR4AOQOAUtHE5d82qDiLvZ4ZuV32fL9UTlA37OptYTC1K2i0uIwu5pbCovzSYSMf','of j1':'FYjNf4F6Y4iC56T182aj4OgqbaVFI83jhTbKZjUgB4HvCua19Xpfhy7UGy9t8oeM','of j2':'52Ev0vCpdbp6AeBsdlFGpbob4BdoF4zMuQQVrENWBSGYnQyu8P1cLITSm5nvOhXF','of j3':'F6n6GMPlxNJemECrWgj55EVyk5E6i8G9rPq9IDFvk88cgSfV3g4u4pPw3s4ybMPR','of adr asmo':'A77bCUjpJn9zx7i1E0EpWuLQFjZDVdeWVqivBwqlqkK0f8Ri3vQAb4eeUfLOD8HW'}
+DEBUG:True
+
