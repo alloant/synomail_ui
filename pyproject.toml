@@ -8,10 +8,13 @@ packages = [{include = "synomail_ui"}]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
-libsynomail = {git = "https://github.com/alloant/libsynomail.git"}
+libsynomail = {git = "https://github.com/alloant/libsynomail.git", rev = "v0.1.1"}
 pyside6 = "^6.5.1"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+synomail = 'synomail_ui.mainWindow:main'

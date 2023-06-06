@@ -150,8 +150,8 @@ synology-drive-api = "^1.0.14"
 [package.source]
 type = "git"
 url = "https://github.com/alloant/libsynomail.git"
-reference = "HEAD"
-resolved_reference = "bae9d81ae67b0c8bd0987de2247b2ab9485d8ce9"
+reference = "v0.1.1"
+resolved_reference = "9f9edd21fcbfb8195e2dc19730a438fbe6c8f5df"
 
 [[package]]
 name = "openpyxl"
@@ -458,4 +458,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "e1f3148d72bcae34081feb00fa3701b0e0ca1160c3b5d71e6af56bcb37550d54"
+content-hash = "ebb7de319eff57c212a455cc7912cc8ab84590cc3e97b3d2b5b5fa98efebab0d"
