@@ -177,35 +177,31 @@ class mainWindow(QMainWindow, QPlainTextEdit):
                 logging.getLogger().setLevel(logging.INFO)
         elif sender == 'upload':
             logging.info('Uploading')
-            folders = ['asr','r']
+            folders = ['asr','r','vc']
             
             for fd in folders:
                 if fd == 'asr':
-                    path_upload = f"{CONFIG['folders']['local_folder']}/asr_in"
+                    path_upload = f"{CONFIG['folders']['local_folder']}/inbox asr"
+                elif fd == 'vc':
+                    path_upload = f"{CONFIG['folders']['local_folder']}/inbox vc"
                 else:
-                    path_upload = f"{CONFIG['folders']['local_folder']}/forti_in"
+                    path_upload = f"{CONFIG['folders']['local_folder']}/inbox forti"
 
                 notes = [f for f in os.listdir(path_upload) if os.path.isfile(os.path.join(path_upload, f))]
                 for note in notes:
-                    if fd == 'asr':
+                    if fd in ['asr','vc']:
                         with open(f"{path_upload}/{note}",mode='rb') as nt:
                             file = io.BytesIO(nt.read())
                             file.name = note
                             logging.info(f"Uploading {note}")
-                            con.nas.upload_file(file,f"/team-folders/Mail {fd}/Mail from {fd}")
+                            if fd == 'asr':
+                                dest = f"/team-folders/Mail {fd}/Mail from {fd}"
+                            else:
+                                dest = f"/team-folders/Mail vc/New from Rome, r and asr to vc"
+                            con.nas.upload_file(file,dest)
                     else:
                         read_eml(f"{path_upload}/{note}")
 
-            """
-            mypath = f"{CONFIG['folders']['local_folder']}/inbox vc"
-            notes = [f for f in os.listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
-            for note in notes:
-               with open(f"{mypath}/{note}",mode='rb') as nt:
-                    file = io.BytesIO(nt.read())
-                    file.name = note
-                    logging.info(f"Uploading {note}")
-                    con.nas.upload_file(file,f"/team-folders/Mail vc/New from Rome, r and asr to vc")
-            """
             logging.info('Uploading is over')
 
         
