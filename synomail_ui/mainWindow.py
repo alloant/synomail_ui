@@ -8,8 +8,9 @@ import io
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QToolBar,
     QPushButton, QWidget,
-    QMessageBox, QFileDialog,
+    QMessageBox, QFileDialog, QDialog, QDialogButtonBox,
     QPlainTextEdit, QLineEdit, QCheckBox,
+    QTableView,
     QHBoxLayout, QVBoxLayout
     )
 
@@ -18,13 +19,14 @@ from PySide6.QtGui import QKeySequence, QIcon, QAction
 
 import logging
 
-from synomail_ui import _ROOT
-from libsynomail import CONFIG, DEBUG
-from libsynomail.get_mail import init_get_mail
-from libsynomail.get_notes_from_d import init_get_notes_from_d
-from libsynomail.register_despacho import init_register_despacho
+from synomail_ui import _ROOT, CONFIG
+from synomail_ui.models import FileModel
+
+from libsynomail.syneml import read_eml
+from libsynomail.get_mail import get_notes_in_folders, generate_register, manage_files_despacho, register_notes
 from libsynomail.send_mail import init_send_mail
 import libsynomail.connection as con
+
 # Uncomment below for terminal log messages
 # logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -38,7 +40,33 @@ class QTextEditLogger(logging.Handler):
         msg = self.format(record)
         self.widget.appendPlainText(msg)
 
+class FileDialog(QDialog):
+    def __init__(self, files, parent = None):
+        super(FileDialog, self).__init__()
+        self.files = files
+        self.model = FileModel(files)
+        self.initUI()
 
+    def initUI(self):
+        view = QTableView()
+        view.setModel(self.model)
+        #view.horizontalHeader().adjustPositions()
+        #view.verticalHeader().hide()
+        view.resizeColumnsToContents()
+        view.setAlternatingRowColors(True)
+        view.setContentsMargins(0, 0, 0, 0)
+        
+        button_box = QDialogButtonBox()
+        ok_button = button_box.addButton("OK", QDialogButtonBox.AcceptRole)
+        cancel_button = button_box.addButton("Cancel", QDialogButtonBox.RejectRole)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
+        
+        layout = QVBoxLayout(self)
+        layout.addWidget(view)
+        layout.addWidget(button_box)
+
+        
 
 class mainWindow(QMainWindow, QPlainTextEdit):
     def __init__(self):
@@ -75,14 +103,20 @@ class mainWindow(QMainWindow, QPlainTextEdit):
 
         buttons = [] 
         buttons.append(['vcs-pull','icons/email-download.svg','get_mail','Get mail from cg, asr, r y ctr'])
-        buttons.append(['vcs-pull','icons/file.svg','register','Register mail despacho and send message to d'])
+        buttons.append(['vcs-pull','icons/cabinet.svg','register','Register mail despacho and send message to d'])
+        buttons.append('separator')
+        buttons.append(['vcs-pull','icons/letter.svg','mail_from_dr','Get notes from dr'])
         buttons.append(['vcs-pull','icons/send.svg','send','Send mail to ctr'])
+        buttons.append('separator')
         buttons.append(['vcs-pull','icons/block-up-bracket.svg','upload','Upload files from cg and asr'])
-        buttons.append(['vcs-pull','icons/block-down-bracket.svg','download','Download files for cg and asr'])
 
         for but in buttons:
-            self.toolBar.addAction(self.new_action(but[0],but[1],but[2],but[3],False))
+            if but == 'separator':
+                self.toolBar.addSeparator()
+            else:
+                self.toolBar.addAction(self.new_action(but[0],but[1],but[2],but[3],False))
         
+        self.toolBar.addSeparator()
         self.ck_debug = QCheckBox("DEBUG")
         self.ck_debug.setObjectName('debug')
         self.ck_debug.stateChanged.connect(self.toolBarActions)
@@ -94,56 +128,76 @@ class mainWindow(QMainWindow, QPlainTextEdit):
         if sender in ['pass','pass_return']:
             self.PASS = self.le_pass.text()
             self.le_pass.clear()
-            con.init_nas(self.PASS) 
+            con.init_nas(CONFIG['user'],self.PASS) 
             for act in self.toolBar.actions():
                 act.setEnabled(True)
         elif sender == 'get_mail':
-            init_get_mail()
-            if not DEBUG:
-                init_get_notes_from_d()
+            logging.info('-------------------------------------')
+            logging.info('---- Starting searching new mail ----')
+
+            files = get_notes_in_folders(CONFIG['teams'],CONFIG['ctrs'],CONFIG['DEBUG'])
+            fd = FileDialog(files,self)
+            if fd.exec() == 1:
+                manage_files_despacho(f"{CONFIG['folders']['despacho']}/Inbox Despacho",fd.model._items)
+            
+            logging.info('----- Finish searching new mail -----')
+            logging.info('-------------------------------------')    
+            
+        elif sender == 'mail_from_dr':
+            logging.info('-------------------------------------')
+            logging.info('---- Starting searching notes from dr ----')
+
+            files = get_notes_in_folders(CONFIG['from_dr'],CONFIG['deps'],CONFIG['DEBUG'])
+            fd = FileDialog(files,self)
+            if fd.exec() == 1:
+                manage_files_despacho(CONFIG['folders']['to_send'],fd.model._items,is_from_dr=True)
+            
+            logging.info('----- Finish searching notes from dr -----')
+            logging.info('-------------------------------------') 
         elif sender == 'register':
-            init_register_despacho()
+            logging.info('-------------------------------------')
+            logging.info('---- Start sending notes to dr and to register them ----')
+
+            register_notes(CONFIG['folders']['despacho'],CONFIG['folders']['archive'],CONFIG['deps'])
+            
+            logging.info('----- Finish sending notes to dr and to register them -----')
+            logging.info('-------------------------------------')
         elif sender == 'send':
-            init_send_mail()
+            logging.info('-------------------------------------')
+            logging.info('---- Start sending notes to cg, asr, r and ctr ----')
+
+            register_notes(CONFIG['folders']['to_send'],CONFIG['folders']['archive'],CONFIG['ctrs']|CONFIG['r'],is_from_dr = True,path_download=CONFIG['folders']['local_folder'])
+            
+            logging.info('----- Finish sending notes to cg, asr, r and ctr -----')
+            logging.info('-------------------------------------') 
         elif sender == 'debug':
             if rst == 2:
                 logging.getLogger().setLevel(logging.DEBUG)
             else:
                 logging.getLogger().setLevel(logging.INFO)
-        elif sender == 'download':
-            logging.info('Downloading')
-            folders = ['cg','r']
-            
-            for fd in folders:
-                notes = con.nas.get_file_list(f"/team-folders/Mail {fd}/Mail to {fd}")
-                for note in notes:
-                    logging.info(f"Downloading {note['display_path']}")
-                    #download_file(synd,note['display_path'],f"{CONFIG['local_folder']}/Mail {fd}/Mail to {fd}")
-                    con.nas.download_file(note['display_path'],f"{CONFIG['local_folder']}/outbox")
-            
-            notes = con.nas.get_file_list(f"/team-folders/Mail vc/From vc to Rome and r")
-            for note in notes:
-                logging.info(f"Downloading {note['display_path']}")
-                con.nas.download_file(note['display_path'],f"{CONFIG['local_folder']}/outbox")
-            
-
-            logging.info('Downloading is over')
-
         elif sender == 'upload':
             logging.info('Uploading')
-            folders = ['cg','r']
-
-            for fd in folders:
-                mypath = f"{CONFIG['local_folder']}/inbox {fd}"
-                notes = [f for f in os.listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
-                for note in notes:
-                    with open(f"{mypath}/{note}",mode='rb') as nt:
-                        file = io.BytesIO(nt.read())
-                        file.name = note
-                        logging.info(f"Uploading {note}")
-                        con.nas.upload_file(file,f"/team-folders/Mail {fd}/Mail from {fd}")
+            folders = ['asr','r']
             
-            mypath = f"{CONFIG['local_folder']}/inbox vc"
+            for fd in folders:
+                if fd == 'asr':
+                    path_upload = f"{CONFIG['folders']['local_folder']}/asr_in"
+                else:
+                    path_upload = f"{CONFIG['folders']['local_folder']}/forti_in"
+
+                notes = [f for f in os.listdir(path_upload) if os.path.isfile(os.path.join(path_upload, f))]
+                for note in notes:
+                    if fd == 'asr':
+                        with open(f"{path_upload}/{note}",mode='rb') as nt:
+                            file = io.BytesIO(nt.read())
+                            file.name = note
+                            logging.info(f"Uploading {note}")
+                            con.nas.upload_file(file,f"/team-folders/Mail {fd}/Mail from {fd}")
+                    else:
+                        read_eml(f"{path_upload}/{note}")
+
+            """
+            mypath = f"{CONFIG['folders']['local_folder']}/inbox vc"
             notes = [f for f in os.listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
             for note in notes:
                with open(f"{mypath}/{note}",mode='rb') as nt:
@@ -151,7 +205,7 @@ class mainWindow(QMainWindow, QPlainTextEdit):
                     file.name = note
                     logging.info(f"Uploading {note}")
                     con.nas.upload_file(file,f"/team-folders/Mail vc/New from Rome, r and asr to vc")
-            
+            """
             logging.info('Uploading is over')
 
         
