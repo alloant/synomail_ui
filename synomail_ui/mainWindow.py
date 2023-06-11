@@ -76,7 +76,8 @@ class mainWindow(QMainWindow, QPlainTextEdit):
     def new_action(self,icon_name,icon_path,name,status="",enable = True):
         #icon = QIcon.fromTheme(icon_name, QIcon(icon_path))
         icon = QIcon.fromTheme(icon_name, QIcon(os.path.join(_ROOT,icon_path)))
-        act = QAction(icon, name.upper(), self)
+        #act = QAction(icon, name.upper(), self)
+        act = QAction(icon, status, self)
         act.setObjectName(name)
         act.setShortcuts(QKeySequence.Open)
         act.setStatusTip(status)
@@ -102,13 +103,13 @@ class mainWindow(QMainWindow, QPlainTextEdit):
         self.toolBar.addSeparator()
 
         buttons = [] 
-        buttons.append(['vcs-pull','icons/email-download.svg','get_mail','Get mail from cg, asr, r y ctr'])
-        buttons.append(['vcs-pull','icons/cabinet.svg','register','Register mail despacho and send message to d'])
+        buttons.append(['up','icons/up.svg','upload','Upload files from local computer to their inbox'])
         buttons.append('separator')
-        buttons.append(['vcs-pull','icons/letter.svg','mail_from_dr','Get notes from dr'])
-        buttons.append(['vcs-pull','icons/send.svg','send','Send mail to ctr'])
+        buttons.append(['mail-in','icons/mail-in.svg','get_mail','Get mail from cg, asr, r y ctr'])
+        buttons.append(['inbox','icons/inbox.svg','register','Register mail and assign it to dr'])
         buttons.append('separator')
-        buttons.append(['vcs-pull','icons/block-up-bracket.svg','upload','Upload files from cg and asr'])
+        buttons.append(['outbox','icons/outbox.svg','mail_from_dr','Get mail from dr'])
+        buttons.append(['mail-out','icons/mail-out.svg','send','Send mail to cg, asr, r y ctr'])
 
         for but in buttons:
             if but == 'separator':
@@ -136,9 +137,10 @@ class mainWindow(QMainWindow, QPlainTextEdit):
             logging.info('---- Starting searching new mail ----')
 
             files = get_notes_in_folders(CONFIG['teams'],CONFIG['ctrs'],CONFIG['DEBUG'])
-            fd = FileDialog(files,self)
-            if fd.exec() == 1:
-                manage_files_despacho(f"{CONFIG['folders']['despacho']}/Inbox Despacho",fd.model._items)
+            if files:
+                fd = FileDialog(files,self)
+                if fd.exec() == 1:
+                    manage_files_despacho(f"{CONFIG['folders']['despacho']}/Inbox Despacho",fd.model._items)
             
             logging.info('----- Finish searching new mail -----')
             logging.info('-------------------------------------')    
@@ -148,9 +150,10 @@ class mainWindow(QMainWindow, QPlainTextEdit):
             logging.info('---- Starting searching notes from dr ----')
 
             files = get_notes_in_folders(CONFIG['from_dr'],CONFIG['deps'],CONFIG['DEBUG'])
-            fd = FileDialog(files,self)
-            if fd.exec() == 1:
-                manage_files_despacho(CONFIG['folders']['to_send'],fd.model._items,is_from_dr=True)
+            if files:
+                fd = FileDialog(files,self)
+                if fd.exec() == 1:
+                    manage_files_despacho(CONFIG['folders']['to_send'],fd.model._items,is_from_dr=True)
             
             logging.info('----- Finish searching notes from dr -----')
             logging.info('-------------------------------------') 
@@ -188,6 +191,9 @@ class mainWindow(QMainWindow, QPlainTextEdit):
                     path_upload = f"{CONFIG['folders']['local_folder']}/inbox forti"
 
                 notes = [f for f in os.listdir(path_upload) if os.path.isfile(os.path.join(path_upload, f))]
+                
+                if not notes: continue
+
                 for note in notes:
                     if fd in ['asr','vc']:
                         with open(f"{path_upload}/{note}",mode='rb') as nt:
