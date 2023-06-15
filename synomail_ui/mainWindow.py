@@ -129,14 +129,14 @@ class mainWindow(QMainWindow, QPlainTextEdit):
         if sender in ['pass','pass_return']:
             self.PASS = self.le_pass.text()
             self.le_pass.clear()
-            con.init_nas(CONFIG['user'],self.PASS) 
+            con.init_nas(CONFIG['user'],self.PASS,CONFIG) 
             for act in self.toolBar.actions():
                 act.setEnabled(True)
         elif sender == 'get_mail':
             logging.info('-------------------------------------')
             logging.info('---- Starting searching new mail ----')
 
-            files = get_notes_in_folders(CONFIG['teams'],CONFIG['ctrs'],CONFIG['DEBUG'])
+            files = get_notes_in_folders(CONFIG['mail_in'],CONFIG['ctrs'])
             if files:
                 fd = FileDialog(files,self)
                 if fd.exec() == 1:
@@ -149,7 +149,7 @@ class mainWindow(QMainWindow, QPlainTextEdit):
             logging.info('-------------------------------------')
             logging.info('---- Starting searching notes from dr ----')
 
-            files = get_notes_in_folders(CONFIG['from_dr'],CONFIG['deps'],CONFIG['DEBUG'])
+            files = get_notes_in_folders(CONFIG['from_dr'],CONFIG['deps'])
             if files:
                 fd = FileDialog(files,self)
                 if fd.exec() == 1:
@@ -161,7 +161,7 @@ class mainWindow(QMainWindow, QPlainTextEdit):
             logging.info('-------------------------------------')
             logging.info('---- Start sending notes to dr and to register them ----')
 
-            register_notes(CONFIG['folders']['despacho'],CONFIG['folders']['archive'],CONFIG['deps'])
+            register_notes()
             
             logging.info('----- Finish sending notes to dr and to register them -----')
             logging.info('-------------------------------------')
@@ -169,7 +169,7 @@ class mainWindow(QMainWindow, QPlainTextEdit):
             logging.info('-------------------------------------')
             logging.info('---- Start sending notes to cg, asr, r and ctr ----')
 
-            register_notes(CONFIG['folders']['to_send'],CONFIG['folders']['archive'],CONFIG['ctrs']|CONFIG['r'],is_from_dr = True,path_download=CONFIG['folders']['local_folder'])
+            register_notes(is_from_dr = True)
             
             logging.info('----- Finish sending notes to cg, asr, r and ctr -----')
             logging.info('-------------------------------------') 
@@ -189,6 +189,8 @@ class mainWindow(QMainWindow, QPlainTextEdit):
                     path_upload = f"{CONFIG['folders']['local_folder']}/inbox vc"
                 else:
                     path_upload = f"{CONFIG['folders']['local_folder']}/inbox forti"
+
+                if not os.path.exists(path_upload): continue
 
                 notes = [f for f in os.listdir(path_upload) if os.path.isfile(os.path.join(path_upload, f))]
                 
