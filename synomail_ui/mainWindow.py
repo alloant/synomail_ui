@@ -24,7 +24,6 @@ from synomail_ui.models import FileModel
 
 from libsynomail.syneml import read_eml
 from libsynomail.get_mail import get_notes_in_folders, generate_register, manage_files_despacho, register_notes
-from libsynomail.send_mail import init_send_mail
 import libsynomail.connection as con
 
 # Uncomment below for terminal log messages
@@ -103,14 +102,14 @@ class mainWindow(QMainWindow, QPlainTextEdit):
         self.toolBar.addSeparator()
 
         buttons = [] 
+        buttons.append(['outbox','icons/outbox.svg','mail_from_dr','Get mail from dr'])
+        buttons.append(['mail-out','icons/mail-out.svg','send','Send mail to cg, asr, r y ctr'])
+        buttons.append('separator')
         buttons.append(['up','icons/up.svg','upload','Upload files from local computer to their inbox'])
         buttons.append('separator')
         buttons.append(['mail-in','icons/mail-in.svg','get_mail','Get mail from cg, asr, r y ctr'])
         buttons.append(['inbox','icons/inbox.svg','register','Register mail and assign it to dr'])
-        buttons.append('separator')
-        buttons.append(['outbox','icons/outbox.svg','mail_from_dr','Get mail from dr'])
-        buttons.append(['mail-out','icons/mail-out.svg','send','Send mail to cg, asr, r y ctr'])
-
+        
         for but in buttons:
             if but == 'separator':
                 self.toolBar.addSeparator()
