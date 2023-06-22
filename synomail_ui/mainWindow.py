@@ -22,9 +22,11 @@ import logging
 from synomail_ui import _ROOT, CONFIG
 from synomail_ui.models import FileModel
 
+
 from libsynomail.syneml import read_eml
-from libsynomail.get_mail import get_notes_in_folders, generate_register, manage_files_despacho, register_notes
-import libsynomail.connection as con
+from libsynomail.get_mail import init_config,get_notes_in_folders, manage_files_despacho, register_notes
+from libsynomail.nas import init_connection
+from libsynomail.register import join_registers
 
 # Uncomment below for terminal log messages
 # logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -104,10 +106,13 @@ class mainWindow(QMainWindow, QPlainTextEdit):
         buttons = [] 
         buttons.append(['outbox','icons/outbox.svg','mail_from_dr','Get mail from dr'])
         buttons.append(['mail-out','icons/mail-out.svg','send','Send mail to cg, asr, r y ctr'])
+        #buttons.append('separator')
+        #buttons.append(['join-out','icons/cyclone.svg','join-out','Join registers in ToSend'])
         buttons.append('separator')
         buttons.append(['up','icons/up.svg','upload','Upload files from local computer to their inbox'])
         buttons.append('separator')
         buttons.append(['mail-in','icons/mail-in.svg','get_mail','Get mail from cg, asr, r y ctr'])
+        buttons.append(['join-in','icons/cyclone.svg','join-in','Join registers in Despacho/Inbox'])
         buttons.append(['inbox','icons/inbox.svg','register','Register mail and assign it to dr'])
         
         for but in buttons:
@@ -128,7 +133,10 @@ class mainWindow(QMainWindow, QPlainTextEdit):
         if sender in ['pass','pass_return']:
             self.PASS = self.le_pass.text()
             self.le_pass.clear()
-            con.init_nas(CONFIG['user'],self.PASS,CONFIG) 
+            
+            init_config(CONFIG)
+            init_connection(CONFIG['user'],self.PASS)
+            
             for act in self.toolBar.actions():
                 act.setEnabled(True)
         elif sender == 'get_mail':
@@ -177,6 +185,10 @@ class mainWindow(QMainWindow, QPlainTextEdit):
                 logging.getLogger().setLevel(logging.DEBUG)
             else:
                 logging.getLogger().setLevel(logging.INFO)
+        elif sender == 'join-out':
+            join_registers(f"{CONFIG['folders']['to_send']}",flow='out')
+        elif sender == 'join-in':
+            join_registers(f"{CONFIG['folders']['despacho']}/Inbox Despacho")
         elif sender == 'upload':
             logging.info('Uploading')
             folders = ['asr','r','vc']
@@ -205,7 +217,7 @@ class mainWindow(QMainWindow, QPlainTextEdit):
                                 dest = f"/team-folders/Mail {fd}/Mail from {fd}"
                             else:
                                 dest = f"/team-folders/Mail vc/New from Rome, r and asr to vc"
-                            con.nas.upload_file(file,dest)
+                            #con.nas.upload_file(file,dest)
                     else:
                         read_eml(f"{path_upload}/{note}")
 
