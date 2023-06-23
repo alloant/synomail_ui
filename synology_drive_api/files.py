@@ -76,6 +76,20 @@ class FilesMixin:
         :param source : id:23333333333  or "'team-folders/folder2/'"
         :param dist: "'team-folders/folder2/temp.odoc'"
         """
+        distpath, distname = os.path.split(dist)
+        ext = os.path.splitext(distname)[1]
+
+        if ext in ['.odoc','.osheet','.oslides']:
+            return self.copy_office(source,dist)
+        else:
+            return self.copy_drive(source,dist)
+
+    def copy_office(self, source: str, dist: str) -> dict:
+        """
+        copy file or dir
+        :param source : id:23333333333  or "'team-folders/folder2/'"
+        :param dist: "'team-folders/folder2/temp.odoc'"
+        """
         if source.isdigit():
             source = f"id:{source}"
         else:
