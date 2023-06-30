@@ -147,7 +147,7 @@ class mainWindow(QMainWindow, QPlainTextEdit):
             if files:
                 fd = FileDialog(files,self)
                 if fd.exec() == 1:
-                    manage_files_despacho(f"{CONFIG['folders']['despacho']}/Inbox Despacho",fd.model._items)
+                    manage_files_despacho({CONFIG['folders']['despacho']},fd.model._items)
             
             logging.info('----- Finish searching new mail -----')
             logging.info('-------------------------------------')    
@@ -160,7 +160,7 @@ class mainWindow(QMainWindow, QPlainTextEdit):
             if files:
                 fd = FileDialog(files,self)
                 if fd.exec() == 1:
-                    manage_files_despacho(CONFIG['folders']['to_send'],fd.model._items,is_from_dr=True)
+                    manage_files_despacho(CONFIG['folders']['despacho'],fd.model._items,is_from_dr=True)
             
             logging.info('----- Finish searching notes from dr -----')
             logging.info('-------------------------------------') 
@@ -219,7 +219,7 @@ class mainWindow(QMainWindow, QPlainTextEdit):
                                 dest = f"/team-folders/Mail vc/New from Rome, r and asr to vc"
                             #con.nas.upload_file(file,dest)
                     else:
-                        read_eml(f"{path_upload}/{note}")
+                        read_eml(f"{path_upload}/{note}",CONFIG['r'])
 
             logging.info('Uploading is over')
 

@@ -32,7 +32,7 @@ class FileModel(QAbstractTableModel):
 
     def flags(self,index):
         flags = super(FileModel,self).flags(index)
-        if index.column() == 4:
+        if index.column() in [1,4]:
             flags |= Qt.ItemIsUserCheckable|Qt.ItemIsEditable
         elif index.column() == 3:
             flags |= Qt.ItemIsEditable
@@ -44,7 +44,7 @@ class FileModel(QAbstractTableModel):
         if value is not None and role == Qt.EditRole:
             self._items[index.row()][list(self._items[index.row()].keys())[index.column()]] = value
             return True
-        elif Qt.CheckStateRole and index.column() == 4:
+        elif Qt.CheckStateRole and index.column() in [1,4]:
             self._items[index.row()][list(self._items[index.row()].keys())[index.column()]] ^= 1
             self._items[index.row()][list(self._items[index.row()].keys())[index.column()]] *= 2
             return True
