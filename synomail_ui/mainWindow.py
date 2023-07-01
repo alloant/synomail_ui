@@ -147,7 +147,7 @@ class mainWindow(QMainWindow, QPlainTextEdit):
             if files:
                 fd = FileDialog(files,self)
                 if fd.exec() == 1:
-                    manage_files_despacho({CONFIG['folders']['despacho']},fd.model._items)
+                    manage_files_despacho(CONFIG['folders']['despacho'],fd.model._items)
             
             logging.info('----- Finish searching new mail -----')
             logging.info('-------------------------------------')    
