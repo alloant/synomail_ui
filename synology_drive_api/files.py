@@ -224,9 +224,7 @@ class FilesMixin:
                                 Default is 'autorename', same as UI default behaviour.
         :return:
         """
-        if file_path.isdigit():
-            file_path = f"id:{file_path}"
-        else:
+        if not file_path.isdigit():
             file_path = f"/{file_path}" if not file_path.startswith('/') else file_path
 
             if '.' not in file_path:
