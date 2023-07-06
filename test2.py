@@ -21,13 +21,15 @@ from libsynomail.syneml import read_eml
 PASS = getpass()
 init_connection('vInd1',PASS)
 
+convert_office("/team-folders/Despacho/Originals/Pl_0064.rtf")
+#convert_office(str(761775199073909955))
 
 
 #files = files_path("/mydrive")
 #for file in files:
 #    print(file)
 #    print('---')
-print(get_info("/team-folders/Archive/ctr out 2023/cr_1119.odoc"))
+#print(get_info("/team-folders/Archive/ctr out 2023/cr_1119.odoc"))
 
 #path = "/mydrive/00 - Admin/Patata.odoc"
 #path = "/team-folders/File Sharing/Antonio/Tests/Archive/asr out 2023/cr-asr_0260.odoc"

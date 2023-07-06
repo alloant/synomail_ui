@@ -224,13 +224,22 @@ class FilesMixin:
                                 Default is 'autorename', same as UI default behaviour.
         :return:
         """
-        if not file_path.isdigit() and '.' not in file_path:
-            raise Exception('file_path should be id or path with file extension, extensions are xlsx, xls, docx etc.')
+        if file_path.isdigit():
+            file_path = f"id:{file_path}"
+        else:
+            file_path = f"/{file_path}" if not file_path.startswith('/') else file_path
+
+            if '.' not in file_path:
+                raise Exception('file_path should be id or path with file extension, extensions are xlsx, xls, docx etc.')
+        
         ret = self.get_file_or_folder_info(file_path)
+        
         file_name = ret['data']['name']
         file_extension = Path(file_name).suffix
-        if file_extension not in ['.xlsx', '.xls', '.docx']:
+        
+        if file_extension not in ['.xlsx', '.xls', '.docx', '.rtf']:
             raise SynologyOfficeFileConvertFailed('file_path extension error.')
+        
         file_id = ret['data']['file_id']
         api_name = 'SYNO.SynologyDrive.Files'
         endpoint = 'entry.cgi'
