@@ -4,9 +4,10 @@ from synology_drive_api.base import SynologySession
 from synology_drive_api.files import FilesMixin
 from synology_drive_api.labels import LabelsMixin
 from synology_drive_api.tasks import TasksMixin
+from synology_drive_api.calendar import CalendarMixin
 
 
-class SynologyDrive(LabelsMixin, FilesMixin, TasksMixin):
+class SynologyDrive(LabelsMixin, FilesMixin, TasksMixin, CalendarMixin):
     # synology login session
     session: SynologySession
     # if you need multiple login session and label functions, disable label cache. Default behavior is enabling cache.

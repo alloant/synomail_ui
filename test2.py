@@ -9,7 +9,7 @@ from getpass import getpass
 import logging
 
 from libsynomail.classes import File
-from libsynomail.nas import init_connection,files_path,move_path,get_info,copy_path,rename_path,convert_office
+from libsynomail.nas import init_connection,files_path,move_path,get_info,copy_path,rename_path,convert_office, create_task
 
 from libsynomail.syneml import read_eml
 
@@ -21,7 +21,9 @@ from libsynomail.syneml import read_eml
 PASS = getpass()
 init_connection('vInd1',PASS)
 
-convert_office("/team-folders/Despacho/Originals/Pl_0064.rtf")
+create_task("/vInd1/home_todo/",'La primera tarea en el chat')
+
+#convert_office("/team-folders/Despacho/Originals/Pl_0064.rtf")
 #convert_office(str(761775199073909955))
 
 

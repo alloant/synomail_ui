@@ -7,8 +7,9 @@ import json
 
 _ROOT = os.path.abspath(os.path.dirname(__file__))
 #path_config = user_config_dir('synomail','prome')
-path_config = "/".join(_ROOT.split("/")[:-1])
-path_config += "/config"
+#path_config = "/".join(_ROOT.split("/")[:-1])
+#path_config += "/config"
+path_config = "config"
 
 if not os.path.exists(path_config):
     os.mkdir(path_config)
