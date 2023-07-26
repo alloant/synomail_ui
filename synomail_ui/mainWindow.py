@@ -104,16 +104,18 @@ class mainWindow(QMainWindow, QPlainTextEdit):
         self.toolBar.addSeparator()
 
         buttons = [] 
-        buttons.append(['outbox','icons/outbox.svg','mail_from_dr','Get mail from dr'])
-        buttons.append(['mail-out','icons/mail-out.svg','send','Send mail to cg, asr, r y ctr'])
+        buttons.append(['inbox','icons/inbox.svg','register','Register and send mail in Despacho Outbox'])
+        buttons.append(['outbox','icons/outbox.svg','mail_from_dr','Get mail from dr and put it in Despacho ToSend'])
         #buttons.append('separator')
         #buttons.append(['join-out','icons/cyclone.svg','join-out','Join registers in ToSend'])
         buttons.append('separator')
-        buttons.append(['up','icons/up.svg','upload','Upload files from local computer to their inbox'])
+        #buttons.append(['up','icons/up.svg','upload','Upload files from local computer to their inbox'])
+        #buttons.append('separator')
+        #buttons.append(['mail-in','icons/mail-in.svg','get_mail','Get mail from cg, asr, r y ctr'])
+        buttons.append(['mail-out','icons/mail-out.svg','send','Send the mail in Despacho ToSend'])
+        buttons.append(['mail-in','icons/mail-in.svg','upload','Get mail from cg, asr, r y ctr and put it in Despacho Inbox'])
         buttons.append('separator')
-        buttons.append(['mail-in','icons/mail-in.svg','get_mail','Get mail from cg, asr, r y ctr'])
-        buttons.append(['join-in','icons/cyclone.svg','join-in','Join registers in Despacho/Inbox'])
-        buttons.append(['inbox','icons/inbox.svg','register','Register mail and assign it to dr'])
+        buttons.append(['join-in','icons/cyclone.svg','join-in','Join registers in Despacho Inbox'])
         
         for but in buttons:
             if but == 'separator':
@@ -140,46 +142,40 @@ class mainWindow(QMainWindow, QPlainTextEdit):
             for act in self.toolBar.actions():
                 act.setEnabled(True)
         elif sender == 'get_mail':
-            logging.info('-------------------------------------')
-            logging.info('---- Starting searching new mail ----')
+            logging.info('-------- Searching new mail in')
 
             files = get_notes_in_folders(CONFIG['mail_in'],CONFIG['ctrs'])
             if files:
                 fd = FileDialog(files,self)
+                fd.setGeometry(100, 100, fd.width(), 300)
                 if fd.exec() == 1:
                     manage_files_despacho(CONFIG['folders']['despacho'],fd.model._items)
             
-            logging.info('----- Finish searching new mail -----')
-            logging.info('-------------------------------------')    
+            logging.info('-------- Finish searching new mail')
             
         elif sender == 'mail_from_dr':
-            logging.info('-------------------------------------')
-            logging.info('---- Starting searching notes from dr ----')
+            logging.info('-------- Searching notes from dr to be sent')
 
             files = get_notes_in_folders(CONFIG['from_dr'],CONFIG['deps'])
             if files:
                 fd = FileDialog(files,self)
+                fd.setGeometry(100, 100, fd.width(), 300)
                 if fd.exec() == 1:
                     manage_files_despacho(CONFIG['folders']['despacho'],fd.model._items,is_from_dr=True)
             
-            logging.info('----- Finish searching notes from dr -----')
-            logging.info('-------------------------------------') 
+            logging.info('-------- Finish searching notes from dr to be sent')
         elif sender == 'register':
-            logging.info('-------------------------------------')
-            logging.info('---- Start sending notes to dr and to register them ----')
+            logging.info('-------- Sending mail in to dr')
 
             register_notes()
             
-            logging.info('----- Finish sending notes to dr and to register them -----')
-            logging.info('-------------------------------------')
+            logging.info('-------- Finish sending mail in to dr')
         elif sender == 'send':
-            logging.info('-------------------------------------')
-            logging.info('---- Start sending notes to cg, asr, r and ctr ----')
+            logging.info('-------- Sending mail out to cg, asr, r and ctr')
 
             register_notes(is_from_dr = True)
             
-            logging.info('----- Finish sending notes to cg, asr, r and ctr -----')
-            logging.info('-------------------------------------') 
+            logging.info('-------- Finish sending mail out to cg, asr, r and ctr')
         elif sender == 'debug':
             if rst == 2:
                 logging.getLogger().setLevel(logging.DEBUG)
@@ -222,14 +218,25 @@ class mainWindow(QMainWindow, QPlainTextEdit):
                         read_eml(f"{path_upload}/{note}",CONFIG['r'])
 
             logging.info('Uploading is over')
+            
+            logging.info('-------- Searching new mail in')
 
+            files = get_notes_in_folders(CONFIG['mail_in'],CONFIG['ctrs'])
+            if files:
+                fd = FileDialog(files,self)
+                fd.setGeometry(100, 100, fd.width(), 300)
+                if fd.exec() == 1:
+                    manage_files_despacho(CONFIG['folders']['despacho'],fd.model._items)
+            
+            logging.info('-------- Finish searching new mail')
         
     def initUI(self):
         self.toolBar()
 
         logTextBox = QTextEditLogger(self)
         # You can format what is printed to text box
-        logTextBox.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        #logTextBox.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        logTextBox.setFormatter(logging.Formatter('%(levelname)s :: %(message)s'))
         logging.getLogger().addHandler(logTextBox)
         # You can control the logging level
         logging.getLogger().setLevel(logging.INFO)
@@ -249,7 +256,7 @@ def main():
     #app.setStyleSheet(qdarktheme.load_stylesheet())
 
     ex = mainWindow()
-    ex.setGeometry(100, 100, ex.width()+600, 600)
+    ex.setGeometry(100, 100, ex.width(), 600)
     ex.show()
     
     sys.exit(app.exec())

@@ -15,13 +15,13 @@ from libsynomail.syneml import read_eml
 
 
 #read_eml('This.eml')
-#read_eml('That.eml')
+read_eml('Aes_32.eml')
 
 
-PASS = getpass()
-init_connection('vInd1',PASS)
+#PASS = getpass()
+#init_connection('vInd1',PASS)
 
-create_task("/vInd1/home_todo/",'La primera tarea en el chat')
+#create_task("/vInd1/home_todo/",'La primera tarea en el chat')
 
 #convert_office("/team-folders/Despacho/Originals/Pl_0064.rtf")
 #convert_office(str(761775199073909955))
