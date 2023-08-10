@@ -15,7 +15,7 @@ from libsynomail.syneml import read_eml
 
 
 #read_eml('This.eml')
-read_eml('Aes_32.eml')
+read_eml('bdu.eml')
 
 
 #PASS = getpass()
