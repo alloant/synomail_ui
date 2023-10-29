@@ -7,11 +7,12 @@ readme = "README.md"
 packages = [{include = "synomail_ui"}]
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.12"
-libsynomail = {git = "https://github.com/alloant/libsynomail.git", rev = "v0.3.3"}
+python = ">=3.11,<3.13"
+libsynomail = {git = "https://github.com/alloant/libsynomail.git", rev = "v0.3.4"}
 pyside6 = "^6.5.1"
 appdirs = "^1.4.4"
 eml-parser = "^1.17.5"
+synology-drive-api = {git = "https://github.com/alloant/synology-drive-api.git", rev = "v0.1.0"}
 
 
 [build-system]

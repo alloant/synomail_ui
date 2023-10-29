@@ -78,7 +78,7 @@ class FilesMixin:
         """
         distpath, distname = os.path.split(dist)
         ext = os.path.splitext(distname)[1]
-
+        #print('here we are:',ext,source,dist)
         if ext in ['.odoc','.osheet','.oslides']:
             return self.copy_office(source,dist)
         else:
