@@ -166,6 +166,7 @@ class FilesMixin:
             # add start position /
             path_params = f"/{file_or_folder_path}" if not file_or_folder_path.startswith('/') else file_or_folder_path
 
+        
         api_name = 'SYNO.SynologyDrive.Files'
         endpoint = 'entry.cgi'
         data = {'api': api_name, 'method': 'get', 'version': 3, 'path': path_params}
@@ -347,9 +348,12 @@ class FilesMixin:
         else:
             ready_for_move_paths = f"/{ready_for_move_paths}" if not ready_for_move_paths.startswith(
                 '/') else ready_for_move_paths
+            
             ret = self.get_file_or_folder_info(ready_for_move_paths)
+            
             ready_for_move_paths = [f"id:{ret['data']['file_id']}"]
-
+            
+        
         # ret = self.get_file_or_folder_info(dest_path)
         api_name = 'SYNO.SynologyDrive.Files'
         endpoint = 'entry.cgi'
@@ -359,6 +363,7 @@ class FilesMixin:
                 'files': ready_for_move_paths,
                 'to_parent_folder': dest_path,
                 'conflict_action': 'autorename'}
+        
         urlencoded_data = form_urlencoded(data)
         return self.session.http_post(endpoint, data=urlencoded_data)
 

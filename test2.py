@@ -9,7 +9,7 @@ from getpass import getpass
 import logging
 
 from libsynomail.classes import File
-from libsynomail.nas import init_connection,files_path,move_path,get_info,copy_path,rename_path,convert_office, create_task
+from libsynomail.nas import init_connection,files_path,move_path,get_info,copy_path,rename_path,convert_office, create_task, create_folder, get_teams
 
 from libsynomail.syneml import read_eml
 
@@ -21,7 +21,23 @@ from libsynomail.syneml import read_eml
 
 
 PASS = getpass()
-init_connection('vInd1',PASS)
+init_connection('despacho',PASS)
+
+#path = 'team-folders/Data/Mail/IN/asr 1.odoc'
+#dest = 'team-folders/Data/Notes/2024/asr in/asr_0001'
+
+#files = files_path("/team-folders/")
+files = get_teams()
+print(files)
+for file in files:
+    if file and file[0].isdigit():
+        #print(file)
+        create_folder(f'/team-folders/{file}',file)
+
+#move_path(path,dest)
+#print(get_info(path))
+
+
 
 #create_task("/vInd1/home_todo/",'La primera tarea en el chat')
 
@@ -38,13 +54,13 @@ init_connection('vInd1',PASS)
 
 #print(get_info("/team-folders/Archive/r out 2023/Aes-r_2065.odoc"))
 
-path = "/mydrive/00 - Admin/Patata.odoc"
+#path = "/mydrive/00 - Admin/Patata.odoc"
 #id_file = "771757611870630345"
-path = "/team-folders/Despacho/ToSend/Done/Patata.odoc"
-path = "1102_HA5TUQ2FHD5O52D8ECLN0BKTVC.doc"
+#path = "/team-folders/Despacho/ToSend/Done/Patata.odoc"
+#path = "1102_HA5TUQ2FHD5O52D8ECLN0BKTVC.doc"
 #path = "771758824448111599"
 
-print(get_info(path))
+#print(get_info(path))
 #print(get_info(id_file))
 
 #copy_path(path,"/team-folders/File Sharing/Antonio/Tests/Mail asr/Mail to asr/cr-asr_0260.odoc")
