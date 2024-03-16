@@ -9,6 +9,7 @@ __pycache__/
 # Distribution / packaging
 test2.py
 todo.txt
+synology_drive_api
 libsynomail
 config
 .Python
